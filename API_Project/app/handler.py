@@ -22,8 +22,7 @@ class OpenAIHandler:
             messages=[{"role": "user", "content": query}],
             functions=self.function_definitions,
         )
-        message = response["choices"][0]["message"]
-        return message
+        return response["choices"][0]["message"]
 
     def process_function_call(self, message):
         if message.get("function_call"):
@@ -32,9 +31,7 @@ class OpenAIHandler:
             function_args_json = message["function_call"].get("arguments", {})
             function_args = json.loads(function_args_json)
 
-            api_function = self.api_functions.get(function_name)
-
-            if api_function:
+            if api_function := self.api_functions.get(function_name):
                 result = str(api_function(**function_args))
                 return function_name, result
             else:
